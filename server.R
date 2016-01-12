@@ -22,10 +22,12 @@ library(DescTools)
 
 predWord <-function (txt) {
 
+  if(txt=='*Your phrase here*') {return('please')}
 # clean up
   
   txt<-tolower(txt)
   txt<-gsub("[^a-z///' ]", " ", txt)
+
 
 # determine number of words in entered text
       
@@ -44,15 +46,16 @@ predWord <-function (txt) {
     fileName<-paste('mc',i,'.txt',sep='')
     zipfileName<-paste('mc',i,'.zip',sep='')
     modelData<-read.table(unz(zipfileName, fileName),header=FALSE)
+#    modelData<-as.data.table(modelData)
     
     if(index>1) {
 
 # look for matching pattern and return results
       
-      matchRows<-modelData[grep (word(txt,-(i-1),-1), 
-                                 word(modelData[,2],1,i-1)),]
+      matchRows<-chmatch(word(txt,-(i-1),-1), 
+                                 word(modelData[,2],1,i-1))
       
-      if(!is.na(matchRows[1,2])) {return(word(matchRows[1,2],i))}
+      if(!is.na(matchRows[1])) {return(word(modelData[matchRows[1],2],i))}
     }  
     else {return(as.character(modelData[1,2]))}
   }

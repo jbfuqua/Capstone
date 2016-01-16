@@ -1,0 +1,162 @@
+---
+title: "Data Science Capstone Milestone Report"
+author: "Joe Fuqua"
+date: "December 16, 2015"
+output: html_document
+---
+
+This is an interim report describing my progress in performing the Capstone project for the Johns Hopkins Data Science Certification program.  At this stage I have successfully obtained the data sets to be analyzed, performed basic data structuring and cleansing, and conducted a preliminary analysis of the data.  
+
+# Sourcing the Data
+
+The data files have been downloaded and unpacked to a local directory on my PC.  
+
+There are three separate directories of three separate files; for this analysis I will focus solely on the English files:
+
+* en_US.blogs.txt
+* en_US.news.txt
+* en_US.twitter.txt
+
+I will load a sample of each of the English files for initial analysis, but first I'll load libraries that we'll need:
+
+
+```{r, warning=FALSE, message=FALSE}
+library(R.utils)
+library(tm)
+library(rJava)
+library(RWeka)
+```
+
+Some basic stats for each file (file size and number of lines):
+
+
+blogs.txt:
+
+```{r}
+
+file.size('final/en_US/en_US.blogs.txt')
+countLines('final/en_US/en_US.blogs.txt')
+
+
+```
+news.txt:
+
+```{r}
+file.size('final/en_US/en_US.news.txt')
+countLines('final/en_US/en_US.news.txt')
+
+```
+twitter.txt:
+
+```{r}
+
+file.size('final/en_US/en_US.twitter.txt')
+countLines('final/en_US/en_US.twitter.txt')
+
+```
+
+So now we have a sense of the size of the data files we're dealing with.
+
+Given the fact that these are large datasets, I'll load the first 1000 records of each of the three English language files so that I can perform some initial exploratory analysis.
+
+```{r, echo=FALSE}
+con_blogs<-file('final/en_US/en_US.blogs.txt')
+con_news<-file('final/en_US/en_US.news.txt')
+con_twitter<-file ('final/en_US/en_US.twitter.txt')
+
+samp_blogs<- readLines(con_blogs, 1000)
+samp_news<- readLines(con_news, 1000)
+samp_twitter<- readLines(con_twitter, 1000)
+
+```
+
+Let's take a quick look at average wordcounts per line for each sample dataset:
+
+blogs.txt:
+```{r, echo=FALSE}
+mean(sapply(strsplit(samp_blogs,' '),length))
+
+```
+news.txt:
+```{r, echo=FALSE}
+mean(sapply(strsplit(samp_news,' '),length))
+
+```
+twitter.txt:
+```{r, echo=FALSE}
+mean(sapply(strsplit(samp_twitter,' '),length))
+
+```
+Next, we'll tokenize the text then purge non-alpha characters and profanity.
+
+# Data Cleansing
+
+First, let's merge datasets and filter undesired characters & text:
+
+```{r}
+merged <- paste(samp_blogs,samp_news,samp_twitter)
+merged_corpus <- Corpus(VectorSource(merged))
+
+```
+
+
+Time to clean up (remove punctuation, numbers, convert to lower to simplify analysis):
+
+```{r}
+merged_corpus<-tm_map( merged_corpus,tolower)
+merged_corpus<-tm_map(merged_corpus,removePunctuation)
+merged_corpus<-tm_map(merged_corpus,removeNumbers)
+merged_corpus<-tm_map(merged_corpus,stripWhitespace)
+
+```
+
+Okay, now for profanity, I found a list of profane phrases at:  http://www.bannedwordlist.com/lists/swearWords.txt
+
+I downloaded the file and will load into R and run against the corpus:
+
+```{r}
+profane_list<-read.table('swearWords.txt',sep='\n')
+merged_corpus<-tm_map(merged_corpus, removeWords, profane_list$V1)
+```
+# Exploring the Data
+
+Okay, let's build some tokenized lists:
+
+Single Groupings:
+```{r}
+
+mc1 <- NGramTokenizer(merged_corpus, Weka_control(min = 1, max = 1))
+mc1_data <- data.frame(table(mc1))
+mc1_data <- mc1_data[order(mc1_data$Freq,decreasing = TRUE),]
+
+barplot(mc1_data[1:10,'Freq'],names.arg=mc1_data[1:10,'mc1'], las=2, main='Word Counts', ylab='Frequency')
+
+```
+
+Paired Groupings:
+```{r}
+
+mc2 <- NGramTokenizer(merged_corpus, Weka_control(min = 2, max = 2))
+mc2_data <- data.frame(table(mc2))
+mc2_data <- mc2_data[order(mc2_data$Freq,decreasing = TRUE),]
+
+barplot(mc2_data[1:10,'Freq'],names.arg=mc2_data[1:10,'mc2'], las=2, main='Word Counts', ylab='Frequency')
+
+```
+
+Triplets:
+```{r}
+
+mc3 <- NGramTokenizer(merged_corpus, Weka_control(min = 3, max = 3))
+mc3_data <- data.frame(table(mc3))
+mc3_data <- mc3_data[order(mc3_data$Freq,decreasing = TRUE),]
+
+barplot(mc3_data[1:10,'Freq'],names.arg=mc3_data[1:10,'mc3'], las=2, main='Word Counts', ylab='Frequency')
+
+```
+
+# Conclusions and Follow Up 
+
+So, now we have a good feel for the data, how to cleanse it, and how to manipulate it.  The next step will be to build a predictive model using a random sample of the merged datasets and to produce the final, consumable report.
+
+

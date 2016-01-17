@@ -39,7 +39,7 @@ predWord <-function (txt) {
 # Clean up input text
   
   txt<-tolower(txt)
-  txt<-gsub("[^a-z///' ]", " ", txt)
+  txt<-gsub("[^a-z// ]", " ", txt)
   returnWords<-vector()
   
 # determine number of words in entered text
@@ -111,9 +111,9 @@ shinyServer(
       wdCloud <- repeatable(wordcloud)
       
       output$cloud <- renderPlot({
-        wdCloud(answer()[,1], answer()[,2], scale=c(4,0.5),
+        wdCloud(answer()[,1], answer()[,2], scale=c(6,0.5),
                       min.freq = 0, max.words=20,
-                      colors=brewer.pal(8, "Dark2"))
+                      colors=brewer.pal(8, "Set1"))
   })
   }
 )

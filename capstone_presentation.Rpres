@@ -1,0 +1,102 @@
+
+Johns Hopkins Data Science Capstone Presentation
+========================================================
+css: bootstrap1.css
+![alt text](jh_img.jpg)
+
+### Joe Fuqua 
+
+### January 16, 2016
+
+
+
+Overview and Objectives
+========================================================
+<font size="5em">
+
+Natural Language Processing (NLP) has become a critical component in many applications that require human interaction and input.  A nice overview of the topic can be found here: <a href='http://www.wired.com/insights/2014/02/growing-importance-natural-language-processing/'>Wired NLP Article</a>
+
+<br>
+
+There are many important applications of NLP including:
+
+    - Context sensitive language translation
+    - Speech to text
+    - Predictive text processing
+
+<br>
+
+The focus of this project is on the latter application.  Leveraging a pre-constructed set of data from blogs, news feeds, and twitter, the goal is to construct a model that predicts the next likely word following a string of text entered by the user.  
+
+<br>
+
+Subsequent slides provide a description of the approach to building the predictive model, instructions for accessing and using the application, and lastly, additional resources such as links to the data and source code.
+
+</font>
+
+Approach and Methodology
+========================================================
+<font size="5em">
+
+An initial analysis was conducted to understand the datasets provided and to inform an initial approach to building a predictive model (<a href='http://rpubs.com/jbfuqua/136759'>Milestone Report</a>).
+
+<br>
+Based on the preliminary analysis, it was clear that the total volume of combined data (1.3 GB uncompressed) is too large to include in whole.  Therefore the following approach was used:
+
+    - Sample a random, small but significant subset of each dataset
+    - Cleanse the data to remove numerics, punctuation, etc
+    - Build a corpus (body of text)
+    - construct lists of one, two, three, four, and five word combinations (n-grams) that appear in the corpus 
+    
+<br>
+
+
+To make a prediction, a simple Back-off model was employed:
+
+    - Crop user-provded input to no more than the last four words
+    - Recursively compare the string in decreasing order to the first words in the set of 5-grams, 4-grams, etc.
+    - When a match is found, display the next word that occurs most frequently
+    - If no word is found, display the most frequent 1-gram
+
+</font>
+
+Application Screenshot and Instructions
+========================================================
+
+![alt text](screen3.jpg)
+
+<font size="5em">
+<a href='https://jbfuqua.shinyapps.io/PredWord/'>Link to Application</a>
+
+***
+
+Instructions for use:
+
+    - Enter any phrase in the input box
+    - Press Submit
+    - See the results!
+
+</font>
+
+Resources
+========================================================
+<font size="5em">
+
+<br>
+
+Project Dataset:  https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip
+(Clicking link will download a very large file)
+
+<br>
+
+Milestone Report:  http://rpubs.com/jbfuqua/136759
+
+<br>
+
+Application:  https://jbfuqua.shinyapps.io/PredWord/
+
+<br>
+
+Source Code: https://github.com/jbfuqua/Capstone
+
+</font>

@@ -37,7 +37,7 @@ shinyUI(fluidPage(width=24,
       
  
            h3('Next Word Prediction'),
-      wellPanel(
+
         column(6, 
         textInput("txt",HTML("<b>Enter a phrase to compare to the corpus</b>"),'*Your phrase here*'),
         submitButton("Submit"),
@@ -48,11 +48,12 @@ shinyUI(fluidPage(width=24,
         verbatimTextOutput("others")
         ),
         column(6,
+               h5(HTML("<b>Word Cloud</b>")),
                plotOutput("cloud")
                
         )
         
-      )
+      
       
      
     )

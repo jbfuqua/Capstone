@@ -27,7 +27,7 @@ if(!file.exists('samp_blogs.txt')) {
   blogs<- readLines(con_blogs)
   close(con_blogs)
   
-  samp_size <- length(blogs)*.05
+  samp_size <- length(blogs)*.10
   samp_blogs<-sample(blogs,samp_size)
   rm(blogs)
   
@@ -41,7 +41,7 @@ if(!file.exists('samp_news.txt')) {
   news<- readLines(con_news)
   close(con_news)
   
-  samp_size <- length(news)*.05
+  samp_size <- length(news)*.10
   samp_news<-sample(news,samp_size)
   rm(news)
   
@@ -55,7 +55,7 @@ if(!file.exists('samp_twitter.txt')) {
   twitter<- readLines(con_twitter)
   close(con_twitter)
   
-  samp_size <- length(twitter)*.05
+  samp_size <- length(twitter)*.10
   samp_twitter<-sample(twitter,samp_size)
   rm(twitter)
   writeLines(samp_twitter,'samp_twitter.txt')

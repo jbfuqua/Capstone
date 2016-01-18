@@ -23,8 +23,8 @@ library(wordcloud)
 # if no match is found, display most frequent 1-gram
 
 predWord <-function (txt) {
- 
-# Text for initialization
+  
+  # Text for initialization
   
   V3<-'please'
   V4<- 1
@@ -33,16 +33,16 @@ predWord <-function (txt) {
   
   returnWords[2,1]<-' '
   returnWords[2,2]<-1
-
+  
   if(txt=='*Your phrase here*') {return(returnWords)}
-
-# Clean up input text
+  
+  # Clean up input text
   
   txt<-tolower(txt)
   txt<-gsub("[^a-z// ]", " ", txt)
   returnWords<-vector()
   
-# determine number of words in entered text
+  # determine number of words in entered text
   
   numWords<-StrCountW(txt)
   if (numWords >= 4) {
@@ -50,7 +50,7 @@ predWord <-function (txt) {
     txt<-word(txt,-4,-1)}
   else {index<-numWords+1}
   
-# cycle through n-grams and return prediction
+  # cycle through n-grams and return prediction
   
   for (i in index:1) {
     
@@ -65,7 +65,7 @@ predWord <-function (txt) {
     
     if(index>1 && i>1) {
       
-# look for matching pattern and return results
+      # look for matching pattern and return results
       
       filterData<-modelData %>%
         filter(str_detect(word(modelData[,3],1,i-1),
@@ -75,10 +75,16 @@ predWord <-function (txt) {
         
         filterData[,3]<-word(filterData[,3],-1)
         returnWords<-rbind(returnWords, filterData[,3:4])}
-    }  
+    }
+    else if(is.na(filterData[1,3])) {
+      V3<-as.character(word(modelData[1,3],-1))
+      v4<-1
+      oneGram<-data.frame(V3,V4)
+      returnWords<-rbind(returnWords,oneGram)
+    }
   }
   
-#  collapse unique values
+  #  collapse unique values
   
   retDT <- data.table(returnWords, key="V3")
   retDT<-retDT[, list(V4=sum(V4)), by=V3]  
@@ -86,14 +92,14 @@ predWord <-function (txt) {
   returnWords<-as.data.frame(retDT)
   returnWords <- returnWords[order(returnWords$V4,decreasing = TRUE),]
   
-    
+  
   if(nrow(returnWords)<2) {
     V3<-as.character('*No more Identified*')
     v4<-1
     noGuess<-data.frame(V3,V4)
     returnWords<-rbind(returnWords,noGuess)}
-
-    return(returnWords)
+  
+  return(returnWords)
 }
 
 shinyServer(

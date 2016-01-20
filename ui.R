@@ -7,7 +7,8 @@ library(shiny)
 library(wordcloud)
 shinyUI(fluidPage(width=24,
   theme="bootstrap.css",
-  titlePanel("Predict Next Word"),
+  titlePanel("Predict Next Word -- Johns Hopkins Data Science Capstone "),
+  h3("Joe Fuqua, January 2016"),
   sidebarLayout(
     sidebarPanel(
       wellPanel(

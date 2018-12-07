@@ -1,2 +1,2 @@
-# Capstone
-This is my Capstone project submission for the Johns Hopkins Coursera Data Science Program
+# Text Predictor
+N-gram based type ahead predictor, to be rearchitected as RNN neural net
